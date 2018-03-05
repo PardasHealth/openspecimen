@@ -434,6 +434,7 @@ public class SpecimenDaoImpl extends AbstractDao<Specimen> implements SpecimenDa
 		addCpCond(query, crit);
 		addPpidCond(query, crit);
 		addSpecimenListCond(query, crit);
+		addReservedForDpCond(query, crit);
 		addStorageLocationCond(query, crit);
 		addSpecimenTypeCond(query, crit);
 		addAnatomicSiteCond(query, crit);
@@ -503,6 +504,16 @@ public class SpecimenDaoImpl extends AbstractDao<Specimen> implements SpecimenDa
 		query.createAlias("specimen.specimenListItems", "listItem")
 			.createAlias("listItem.list", "list")
 			.add(Restrictions.eq("list.id", crit.specimenListId()));
+	}
+
+	private void addReservedForDpCond(Criteria query, SpecimenListCriteria crit) {
+		if (crit.reservedForDp() == null) {
+			return;
+		}
+
+		query.createAlias("specimen.reservedEvent", "reservedDpEvent")
+			.createAlias("reservedDpEvent.dp", "dp")
+			.add(Restrictions.eq("dp.id", crit.reservedForDp()));
 	}
 
 	private void addStorageLocationCond(Criteria query, SpecimenListCriteria crit) {

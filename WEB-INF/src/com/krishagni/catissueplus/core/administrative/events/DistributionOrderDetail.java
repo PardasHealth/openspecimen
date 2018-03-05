@@ -23,6 +23,8 @@ public class DistributionOrderDetail extends DistributionOrderSummary implements
 	private SpecimenRequestSummary request;
 
 	private SpecimenListSummary specimenList;
+
+	private Boolean allReservedSpmns;
 	
 	private List<DistributionOrderItemDetail> orderItems = new ArrayList<>();
 	
@@ -82,6 +84,14 @@ public class DistributionOrderDetail extends DistributionOrderSummary implements
 
 	public void setSpecimenList(SpecimenListSummary specimenList) {
 		this.specimenList = specimenList;
+	}
+
+	public Boolean getAllReservedSpmns() {
+		return allReservedSpmns;
+	}
+
+	public void setAllReservedSpmns(Boolean allReservedSpmns) {
+		this.allReservedSpmns = allReservedSpmns;
 	}
 
 	public List<DistributionOrderItemDetail> getOrderItems() {

@@ -225,4 +225,10 @@
         r.cancelled_event_id is not null
     </createView>
   </changeSet>
+
+  <changeSet author="vpawar" id="Flag to indicate whether the order was created to distribute reserved specimens">
+    <addColumn tableName="OS_ORDERS">
+      <column name="SPMNS_RESERVED_FOR_DP" type="${bit.type}"/>
+    </addColumn>
+  </changeSet>
 </databaseChangeLog>

@@ -581,19 +581,25 @@ public class DistributionOrderServiceImpl implements DistributionOrderService, O
 	}
 
 	private void ensureValidSpecimens(DistributionOrder order, List<Pair<Long, Long>> siteCps, OpenSpecimenException ose) {
-		if (order.getSpecimenList() != null) {
-			Long orderId = order.getId();
-
+		if (order.getSpecimenList() != null || order.isForAllReservedSpecimens()) {
 			int startAt = 0, maxSpmns = 100;
+			Long orderId = order.getId();
+			Function<Integer, List<Specimen>> getSpecimens = getSpecimensFn(order, siteCps, maxSpmns);
+
 			boolean endOfSpecimens = false;
 			while (!endOfSpecimens) {
 				if (order == null) {
 					order = daoFactory.getDistributionOrderDao().getById(orderId);
+					getSpecimens = getSpecimensFn(order, siteCps, maxSpmns);
 				}
 
-				List<Specimen> specimens = getSpecimens(order.getSpecimenList(), siteCps, startAt, maxSpmns);
+				List<Specimen> specimens = getSpecimens.apply(startAt);
 				if (specimens.isEmpty() && startAt == 0) {
-					ose.addError(DistributionOrderErrorCode.NO_SPMNS_IN_LIST, order.getSpecimenList().getName());
+					if (order.getSpecimenList() != null) {
+						ose.addError(DistributionOrderErrorCode.NO_SPMNS_IN_LIST, order.getSpecimenList().getName());
+					} else {
+						ose.addError(DistributionOrderErrorCode.NO_SPMNS_RESV_FOR_DP, order.getDistributionProtocol().getShortTitle());
+					}
 				}
 
 				ensureValidSpecimens(specimens, order.getDistributionProtocol(), siteCps, ose);
@@ -611,12 +617,17 @@ public class DistributionOrderServiceImpl implements DistributionOrderService, O
 		}
 	}
 
-	private List<Specimen> getSpecimens(SpecimenList specimenList, List<Pair<Long, Long>> siteCps, int startAt, int maxResults) {
-		SpecimenListCriteria crit = new SpecimenListCriteria()
-			.specimenListId(specimenList.getId()).siteCps(siteCps)
-			.startAt(startAt).maxResults(maxResults)
-			.limitItems(true);
-		return daoFactory.getSpecimenDao().getSpecimens(crit);
+	private Function<Integer, List<Specimen>> getSpecimensFn(DistributionOrder order, List<Pair<Long, Long>> siteCps, int maxSpmns) {
+		Long specimenListId = order.getSpecimenList() != null ? order.getSpecimenList().getId() : null;
+		Long reservedForDp  = specimenListId != null ? null : order.getDistributionProtocol().getId();
+
+		return (startAt) -> daoFactory.getSpecimenDao().getSpecimens(new SpecimenListCriteria()
+			.specimenListId(specimenListId)
+			.reservedForDp(reservedForDp)
+			.siteCps(siteCps)
+			.startAt(startAt).maxResults(maxSpmns)
+			.limitItems(true)
+		);
 	}
 
 	private void ensureValidSpecimens(
@@ -903,7 +914,7 @@ public class DistributionOrderServiceImpl implements DistributionOrderService, O
 	}
 
 	private void addRates(DistributionOrder order, Collection<DistributionOrderItem> items) {
-		if (order.getSpecimenList() == null) {
+		if (order.getSpecimenList() == null && !order.isForAllReservedSpecimens()) {
 			items.forEach(item -> addRate(order, item));
 		}
 	}
@@ -923,15 +934,16 @@ public class DistributionOrderServiceImpl implements DistributionOrderService, O
 
 		order.distribute();
 		daoFactory.getDistributionOrderDao().saveOrUpdate(order);
-		if (order.getSpecimenList() == null) {
+		if (order.getSpecimenList() == null && !order.isForAllReservedSpecimens()) {
 			return;
 		}
 
 		boolean endOfSpecimens = false;
 		int starAt = 0, maxSpmns = 100;
+		Function<Integer, List<Specimen>> getSpecimens = getSpecimensFn(order, siteCps, maxSpmns);
 		List<Specimen> specimens;
 		while (!endOfSpecimens) {
-			specimens = getSpecimens(order.getSpecimenList(), siteCps, starAt, maxSpmns);
+			specimens = getSpecimens.apply(starAt);
 			specimens.forEach(spmn -> distributeSpecimen(order, spmn));
 
 			starAt += specimens.size();

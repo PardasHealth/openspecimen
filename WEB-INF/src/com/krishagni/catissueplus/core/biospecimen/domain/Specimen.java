@@ -932,6 +932,11 @@ public class Specimen extends BaseExtensionEntity {
 		SpecimenDistributionEvent.createForDistributionOrderItem(item).saveRecordEntry();
 
 		//
+		// cancel the reservation so that it can be distributed subsequently if available
+		//
+		setReservedEvent(null);
+
+		//
 		// close specimen if explicitly closed or no quantity available
 		//
 		if (NumUtil.isZero(getAvailableQuantity()) || item.isDistributedAndClosed()) {

@@ -704,7 +704,7 @@ public class DistributionOrderServiceImpl implements DistributionOrderService, O
 			return true;
 		}
 
-		return !specimen.getDistributionProtocols().contains(dp);
+		return !specimen.getDistributionProtocols().isEmpty() && !specimen.getDistributionProtocols().contains(dp);
 	}
 
 	private DistributionProtocol getDp(Long dpId, String dpShortTitle) {

@@ -19,6 +19,8 @@ public class ReserveSpecimensDetail {
 
 	private String comments;
 
+	private Boolean cancelOp;
+
 	public Long getDpId() {
 		return dpId;
 	}
@@ -65,5 +67,13 @@ public class ReserveSpecimensDetail {
 
 	public void setComments(String comments) {
 		this.comments = comments;
+	}
+
+	public Boolean getCancelOp() {
+		return cancelOp;
+	}
+
+	public void setCancelOp(Boolean cancelOp) {
+		this.cancelOp = cancelOp;
 	}
 }

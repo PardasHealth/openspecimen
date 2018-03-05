@@ -20,3 +20,4 @@ shipment-received-event.xml, true, true
 return-event.xml, true, true
 children-event.xml, true, true
 reserved-event.xml, true, true
+cancel-reservation-event.xml, true, true

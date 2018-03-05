@@ -209,4 +209,20 @@
         r.cancelled_event_id is null
     </createView>
   </changeSet>
+
+  <changeSet author="vpawar" id="Specimen reservation cancellation events view">
+    <createView viewName="OS_SPMN_RESV_CANCEL_VIEW" replaceIfExists="true">
+      select
+        r.identifier as identifier,
+        dp.short_title as dp_short_title,
+        r.user_id as cancelled_by,
+        r.event_time as cancellation_date,
+        r.comments as comments
+      from
+        os_spmn_reserved_events r
+        inner join catissue_distribution_protocol dp on dp.identifier = r.dp_id
+      where
+        r.cancelled_event_id is not null
+    </createView>
+  </changeSet>
 </databaseChangeLog>

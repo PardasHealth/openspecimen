@@ -136,7 +136,6 @@ angular.module('os.biospecimen.specimen')
         distributionProtocol: dp,
         requester: dp.principalInvestigator,
         siteName: dp.defReceivingSiteName,
-        distributor: details.user,
         orderItems: getOrderItems(specimens),
         comments: details.comments,
         status: 'EXECUTED'
@@ -164,7 +163,6 @@ angular.module('os.biospecimen.specimen')
     function reserveSpmns(scope, details, specimens) {
       var request = {
         dpId: details.dp.id,
-        user: details.user,
         comments: details.comments,
         specimens: specimens.map(function(spmn) { return {id: spmn.id }; })
       };

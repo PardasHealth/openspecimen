@@ -40,6 +40,8 @@ public interface DistributionOrderService {
 
 	public ResponseEvent<List<SpecimenInfo>> returnSpecimens(RequestEvent<List<ReturnedSpecimenDetail>> req);
 
+	ResponseEvent<List<SpecimenInfo>> getReservedSpecimens(RequestEvent<SpecimenListCriteria> req);
+
 	ResponseEvent<Integer> reserveSpecimens(RequestEvent<ReserveSpecimensDetail> req);
 
 	//

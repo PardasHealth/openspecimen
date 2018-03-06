@@ -169,7 +169,8 @@ public class DistributionOrderDetail extends DistributionOrderSummary implements
 		if (order.getSpecimenList() != null) {
 			detail.setSpecimenList(SpecimenListSummary.fromSpecimenList(order.getSpecimenList()));
 		}
-		
+
+		detail.setAllReservedSpmns(order.getAllReservedSpecimens());
 		detail.setTrackingUrl(order.getTrackingUrl());
 		detail.setComments(order.getComments());
 		detail.setExtensionDetail(ExtensionDetail.from(order.getExtension()));

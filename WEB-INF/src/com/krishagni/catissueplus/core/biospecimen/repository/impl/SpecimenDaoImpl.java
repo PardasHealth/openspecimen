@@ -464,7 +464,7 @@ public class SpecimenDaoImpl extends AbstractDao<Specimen> implements SpecimenDa
 	}
 
 	private void addCpCond(Criteria query, SpecimenListCriteria crit) {
-		if (crit.cpId() == null) {
+		if (crit.cpId() == null && StringUtils.isBlank(crit.cpShortTitle())) {
 			return;
 		}
 
@@ -477,7 +477,11 @@ public class SpecimenDaoImpl extends AbstractDao<Specimen> implements SpecimenDa
 				.createAlias("cpr.collectionProtocol", "cp");
 		}
 
-		query.add(Restrictions.eq("cp.id", crit.cpId()));
+		if (crit.cpId() != null) {
+			query.add(Restrictions.eq("cp.id", crit.cpId()));
+		} else {
+			query.add(Restrictions.eq("cp.shortTitle", crit.cpShortTitle()));
+		}
 	}
 
 	private void addPpidCond(Criteria query, SpecimenListCriteria crit) {

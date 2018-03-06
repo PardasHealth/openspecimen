@@ -293,6 +293,32 @@ public class DistributionOrderServiceImpl implements DistributionOrderService, O
 
 	@Override
 	@PlusTransactional
+	public ResponseEvent<List<SpecimenInfo>> getReservedSpecimens(RequestEvent<SpecimenListCriteria> req) {
+		try {
+			SpecimenListCriteria criteria = req.getPayload();
+			DistributionProtocol dp = getDp(criteria.reservedForDp(), null);
+			AccessCtrlMgr.getInstance().ensureReadDpRights(dp);
+
+			//
+			// Ensure user has specimen read rights
+			//
+			List<Pair<Long, Long>> siteCps = AccessCtrlMgr.getInstance().getReadAccessSpecimenSiteCps();
+			if (siteCps != null && siteCps.isEmpty()) {
+				return ResponseEvent.userError(RbacErrorCode.ACCESS_DENIED);
+			}
+			criteria.siteCps(siteCps);
+
+			List<Specimen> spmns = daoFactory.getSpecimenDao().getSpecimens(criteria);
+			return ResponseEvent.response(SpecimenInfo.from(spmns));
+		} catch (OpenSpecimenException ose) {
+			return ResponseEvent.error(ose);
+		} catch (Exception e) {
+			return ResponseEvent.serverError(e);
+		}
+	}
+
+	@Override
+	@PlusTransactional
 	public ResponseEvent<Integer> reserveSpecimens(RequestEvent<ReserveSpecimensDetail> req) {
 		try {
 			ReserveSpecimensDetail detail = req.getPayload();

@@ -866,7 +866,7 @@ public class DistributionOrderServiceImpl implements DistributionOrderService, O
 		ensureValidSpecimens(notReservedForDp, dp, siteCps, ose);
 		ose.checkAndThrow();
 
-		List<SpecimenReservedEvent> events = specimens.stream().map(spmn -> {
+		List<SpecimenReservedEvent> events = notReservedForDp.stream().map(spmn -> {
 			SpecimenReservedEvent event = new SpecimenReservedEvent();
 			event.setSpecimen(spmn);
 			event.setDp(dp);

@@ -655,6 +655,14 @@ public class Specimen extends BaseExtensionEntity {
 	public boolean isActiveOrClosed() {
 		return isActive() || isClosed();
 	}
+
+	public boolean isReserved() {
+		return getReservedEvent() != null;
+	}
+
+	public boolean isEditAllowed() {
+		return !isReserved() && isActive();
+	}
 	
 	public boolean isAliquot() {
 		return ALIQUOT.equals(lineage);
@@ -851,6 +859,10 @@ public class Specimen extends BaseExtensionEntity {
 	// TODO: Modify to accommodate pooled specimens
 	//	
 	public void updateStatus(String activityStatus, User user, Date date, String reason, boolean isForceDelete) {
+		if (isReserved()) {
+			throw OpenSpecimenException.userError(SpecimenErrorCode.EDIT_NOT_ALLOWED, getLabel());
+		}
+
 		if (this.activityStatus != null && this.activityStatus.equals(activityStatus)) {
 			return;
 		}

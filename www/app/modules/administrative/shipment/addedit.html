@@ -101,7 +101,7 @@
         <div ng-switch-default>
           <os-institutes name="receivingInstitute" ng-model="shipment.receivingInstitute"
             placeholder="{{'shipments.receiving_institute' | translate}}"
-            on-select="onInstituteSelect(shipment.receivingInstitute)" required>
+            on-select="onInstituteSelect(institute)" required>
           </os-institutes>
           <div os-field-error field="shipForm.receivingInstitute"></div>
         </div>

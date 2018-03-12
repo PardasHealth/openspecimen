@@ -1,5 +1,5 @@
 
-angular.module('os.administrative.institute.dropdown', ['os.administrative.models'])
+angular.module('openspecimen')
   .directive('osInstitutes', function(AuthorizationService, Institute) {
     function loadInstitutes(scope, searchTerm) {
       var opts = angular.extend({name : searchTerm}, scope.filterOpts || {});
@@ -25,14 +25,6 @@ angular.module('os.administrative.institute.dropdown', ['os.administrative.model
       controller: function($scope) {
         $scope.searchInstitutes = function(searchTerm) {
           loadInstitutes($scope, searchTerm);
-
-          $scope.$watch('filterOpts', function(newVal, oldVal) {
-            if (newVal == oldVal) {
-              return;
-            }
-
-            loadInstitutes($scope);
-          });
         };
       },
   
@@ -53,7 +45,7 @@ angular.module('os.administrative.institute.dropdown', ['os.administrative.model
         return '' +
           '<div class="os-select-container ' + mdInput + '">' +
             '<ui-select ' + multiple + ' ng-model="$parent.ngModel" reset-search-input="true"' +
-              'on-select="onSelect({$item: $item})"' +
+              'on-select="onSelect({institute: $item})"' +
               ' append-to-body="' + bodyAppend + '" os-tabable="' + tabable + '" ' + ngRequired + '>' +
               '<ui-select-match placeholder="{{$parent.placeholder}}">' +
                 '{{' + selectOption + '}}' +

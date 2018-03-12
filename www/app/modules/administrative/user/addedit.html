@@ -73,7 +73,7 @@
         <label class="col-xs-3 control-label" translate="user.institute">Institute</label>
         <div class="col-xs-6">
           <os-institutes name="institute" ng-model="user.instituteName"
-            on-select="onInstituteSelect($item)" placeholder="{{'user.institute' | translate}}" required>
+            on-select="onInstituteSelect(institute)" placeholder="{{'user.institute' | translate}}" required>
           </os-institutes>
           <div os-field-error field="userForm.institute"></div>
         </div>

@@ -23,7 +23,7 @@ angular.module('os.administrative.user.addedit', ['os.administrative.models'])
     }
 
     function loadSites(instituteName, siteName) {
-      if (!instituteName) {
+      if (!instituteName || instituteName.length == 0) {
         $scope.sites = [];
         return;
       }

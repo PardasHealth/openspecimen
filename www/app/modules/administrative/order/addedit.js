@@ -288,9 +288,8 @@ angular.module('os.administrative.order.addedit', ['os.administrative.models', '
       setExtnFormCtxt($scope.order);
     }
     
-    $scope.onInstSelect = function () {
-      var instName = $scope.order.instituteName;
-      setUserFilterOpts(instName);
+    $scope.onInstSelect = function (institute) {
+      setUserFilterOpts(institute);
       $scope.order.siteName = '';
       $scope.order.requester = '';
     }
